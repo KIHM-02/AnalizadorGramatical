@@ -14,6 +14,6 @@ IDENTIFIER = [a-zA-Z][a-zA-Z]*
 %%
 
 {WHITESPACE}    {/*Ignoramos los espacios en blanco */}
-{NUMBER}        {return "NUMBER" + yytext(); }
-{IDENTIFIER}    {return "IDENTIFIER"+yytext();}
-. {System.out.println("ERROR: "+yytext());} //Capturamos la palabra mal escrita
+{NUMBER}        {return "NUMBER " + yytext()+"\n"; }
+{IDENTIFIER}    {return "IDENTIFIER "+yytext()+"\n";}
+.               {return "ERROR: "+yytext();} //Capturamos la palabra mal escrita

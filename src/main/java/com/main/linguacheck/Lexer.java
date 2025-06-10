@@ -680,12 +680,12 @@ public class Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return "NUMBER" + yytext();
+            { return "NUMBER " + yytext()+"\n";
             }
           // fall through
           case 5: break;
           case 2:
-            { System.out.println("ERROR: "+yytext());
+            { return "ERROR: "+yytext();
             }
           // fall through
           case 6: break;
@@ -695,7 +695,7 @@ public class Lexer {
           // fall through
           case 7: break;
           case 4:
-            { return "IDENTIFIER"+yytext();
+            { return "IDENTIFIER "+yytext()+"\n";
             }
           // fall through
           case 8: break;

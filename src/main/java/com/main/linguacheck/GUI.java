@@ -4,6 +4,16 @@
  */
 package com.main.linguacheck;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author monte
@@ -41,6 +51,11 @@ public class GUI extends javax.swing.JFrame {
         lblIndicacion.setText("Ingresa un texto, solo puede leer cadenas NO PARRAFOS");
 
         btnAnalizar.setText("Analizar");
+        btnAnalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAnalizarActionPerformed(evt);
+            }
+        });
 
         txaResultado.setColumns(20);
         txaResultado.setRows(5);
@@ -82,39 +97,60 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+    private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
+        String input = txtnput.getText();
+        String output;
+        
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            writeInFile(input);
+            output = readFromFile();
+            
+            System.out.println("La salida obtenida es: "+output);
+            txaResultado.append(output+"\n");
+            
+        } catch (IOException ex) {
+            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+    }//GEN-LAST:event_btnAnalizarActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUI().setVisible(true);
+    
+    private void writeInFile(String input) throws IOException
+    {
+        System.out.println("La linea escrita es: "+input);
+        File fichero = new File("fichero.txt");
+        PrintWriter writer;
+        
+        try{
+            writer = new PrintWriter(fichero);
+            writer.print(input);
+            writer.close();
+            
+        }catch(FileNotFoundException er){
+            Logger.getLogger("There was an error: "+er);
+        }
+    }
+    
+    private String readFromFile() throws FileNotFoundException, IOException
+    {
+        Reader reader = new BufferedReader(new FileReader("fichero.txt"));
+        Lexer lexer = new Lexer(reader);
+        StringBuilder resultado = new StringBuilder();
+        String token;
+        
+        while((token = lexer.yylex()) != null){
+            resultado.append(token);
+            System.out.println("--> El resultado es "+token);
+            
+            if(token.contains("ERROR"))
+            {
+                resultado.setLength(0); //Limpia el Builder
+                resultado.append(token);
+                System.out.println("Se limpio el builder...");
+                break;
             }
-        });
+        }
+        
+        return resultado.toString();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
