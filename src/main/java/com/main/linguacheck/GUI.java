@@ -4,13 +4,7 @@
  */
 package com.main.linguacheck;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +17,14 @@ public class GUI extends javax.swing.JFrame {
     /**
      * Creates new form GUI
      */
-    public GUI() {
+    private Controller controller;
+    
+    public GUI() 
+    {
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        controller = new Controller();
     }
 
     /**
@@ -102,8 +101,8 @@ public class GUI extends javax.swing.JFrame {
         String output;
         
         try {
-            writeInFile(input);
-            output = readFromFile();
+            this.controller.writeInFile(input);
+            output = this.controller.readFromFile();
             
             System.out.println("La salida obtenida es: "+output);
             txaResultado.append(output+"\n");
@@ -113,45 +112,6 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
-    
-    private void writeInFile(String input) throws IOException
-    {
-        System.out.println("La linea escrita es: "+input);
-        File fichero = new File("fichero.txt");
-        PrintWriter writer;
-        
-        try{
-            writer = new PrintWriter(fichero);
-            writer.print(input);
-            writer.close();
-            
-        }catch(FileNotFoundException er){
-            Logger.getLogger("There was an error: "+er);
-        }
-    }
-    
-    private String readFromFile() throws FileNotFoundException, IOException
-    {
-        Reader reader = new BufferedReader(new FileReader("fichero.txt"));
-        Lexer lexer = new Lexer(reader);
-        StringBuilder resultado = new StringBuilder();
-        String token;
-        
-        while((token = lexer.yylex()) != null){
-            resultado.append(token);
-            System.out.println("--> El resultado es "+token);
-            
-            if(token.contains("ERROR"))
-            {
-                resultado.setLength(0); //Limpia el Builder
-                resultado.append(token);
-                System.out.println("Se limpio el builder...");
-                break;
-            }
-        }
-        
-        return resultado.toString();
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnalizar;
